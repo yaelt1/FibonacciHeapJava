@@ -244,13 +244,23 @@ public class FibonacciHeap_v2 {
      * ###CRITICAL### : you are NOT allowed to change H.
      */
     public static int[] kMin(FibonacciHeap_v2 H, int k) {
+        if (k==0){return new int[0];}
         int[] arr = new int[k];
         FibonacciHeap_v2 aidHeap = new FibonacciHeap_v2();
-        HeapNode curNode = H.min;
-        aidHeap.insertNode(curNode);
-        aidHeap.size = H.size();
+        aidHeap.insert(H.min.key);
+        aidHeap.first.copy = H.min;
         for (int i = 0; i < k; i++) {
             arr[i] = aidHeap.min.key;
+            if (aidHeap.min.copy.child != null){
+                boolean last = false;
+                HeapNode child = aidHeap.min.copy.child;
+                while (!last){
+                    aidHeap.insert(child.key);
+                    aidHeap.first.copy = child;
+                    child = child.next;
+                    if ( child.key == aidHeap.min.copy.child.key) {last=true;}
+                }
+            }
             aidHeap.deleteMin();
         }
         return arr;
@@ -280,6 +290,7 @@ public class FibonacciHeap_v2 {
         boolean last = false;
         while (!last) {
             HeapNode prev = curNode;
+            curNode.mark = false;
             curNode.parent = null;
             curNode = curNode.next;
             if (curNode.key==this.min.child.key){ last=true; curNode = prev;}
@@ -338,8 +349,10 @@ public class FibonacciHeap_v2 {
     }
 
     public void consolidation() {
-        int sizeArray = (int) (Math.log10(this.size+1) / Math.log10(2));
-        HeapNode[] ranksArray = new HeapNode[sizeArray + 2];
+        int logN = (int) (Math.log10(this.size) / Math.log10(2));
+        int sizeArray= Math.max(logN, this.last.rank+1);
+        HeapNode[] ranksArray = new HeapNode[sizeArray + 1];
+
         ranksArray[this.first.rank] = this.first;
         HeapNode curNode = this.first.next;
         this.first.next = this.first;
@@ -401,6 +414,11 @@ public class FibonacciHeap_v2 {
             ranksArray[smallerKey.rank] = smallerKey;
         }
         numOfLinks++;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     public int markRec(HeapNode node) {
@@ -466,8 +484,7 @@ public class FibonacciHeap_v2 {
         public HeapNode parent;
         public HeapNode next;
         public HeapNode prev;
-
-        //public String info;
+        public HeapNode copy;
 
         public HeapNode(int key) {
             this.key = key;
@@ -478,6 +495,7 @@ public class FibonacciHeap_v2 {
             this.prev = this;
             this.rank = 0;
         }
+
         public int getKey() {
             return this.key;
         }
