@@ -1,7 +1,3 @@
-
-import java.util.Arrays;
-import java.util.HashMap;
-
 /**
  * FibonacciHeap
  * <p>
@@ -9,11 +5,11 @@ import java.util.HashMap;
  */
 public class FibonacciHeap {
 
-    private int size = 0;
-    private HeapNode min;
-    private HeapNode first;
-    private HeapNode last;
-    private static int numOfLinks = 0;
+    public int size = 0;
+    public HeapNode min;
+    public HeapNode first;
+    public HeapNode last;
+    public static int numOfLinks = 0;
 
     private static int numOfCuts = 0;
 
@@ -79,16 +75,19 @@ public class FibonacciHeap {
      * Melds heap2 with the current heap.
      */
     public void meld(FibonacciHeap heap2) {  //O(1)
+        if (this.isEmpty()){
+            this.min=heap2.min; this.first=heap2.first; this.last=heap2.last; this.size=heap2.size; return;}
+        if (heap2.isEmpty()){return;}
         this.last.next = heap2.first;
-        heap2.first = this.last;
+        heap2.first.prev = this.last;
         this.first.prev = heap2.last;
         heap2.last.next = this.first;
         this.last = heap2.last;
         this.size += heap2.size();
         if (heap2.min.key < this.min.key) {
             this.min = heap2.min;
-        }
-    }
+        }}
+
 
     /**
      * public int size()
@@ -135,7 +134,9 @@ public class FibonacciHeap {
      * It is assumed that x indeed belongs to the heap.
      */
     public void delete(HeapNode x) {
-        this.decreaseKey(x, x.key - this.min.key + 1);
+        int delta = x.key-this.min.key+1;
+        if (this.min.key==Integer.MIN_VALUE){this.decreaseKey(x, x.key-this.min.key);}
+        else{this.decreaseKey(x, delta);}
         this.deleteMin();
     }
 
@@ -147,6 +148,8 @@ public class FibonacciHeap {
      */
     public void decreaseKey(HeapNode x, int delta) {
         x.key = x.key - delta;
+        if (x.key == Integer.MIN_VALUE){this.min=x;}
+        if (x.key<this.min.key){this.min=x;}
         if (x.parent != null) {
             if (x.key < x.parent.key) { //breaks the heap condition
                 this.cascadingCut(x, x.parent);
@@ -238,13 +241,23 @@ public class FibonacciHeap {
      * ###CRITICAL### : you are NOT allowed to change H.
      */
     public static int[] kMin(FibonacciHeap H, int k) {
+        if (k==0){return new int[0];}
         int[] arr = new int[k];
         FibonacciHeap aidHeap = new FibonacciHeap();
-        HeapNode curNode = H.min;
-        aidHeap.insertNode(curNode);
-        aidHeap.size = H.size();
+        aidHeap.insert(H.min.key);
+        aidHeap.first.copy = H.min;
         for (int i = 0; i < k; i++) {
             arr[i] = aidHeap.min.key;
+            if (aidHeap.min.copy.child != null){
+                boolean last = false;
+                HeapNode child = aidHeap.min.copy.child;
+                while (!last){
+                    aidHeap.insert(child.key);
+                    aidHeap.first.copy = child;
+                    child = child.next;
+                    if ( child.key == aidHeap.min.copy.child.key) {last=true;}
+                }
+            }
             aidHeap.deleteMin();
         }
         return arr;
@@ -271,9 +284,15 @@ public class FibonacciHeap {
             this.last = this.min.child.prev;
         }
         HeapNode curNode = this.min.child;
-        while (curNode.next.key != this.min.child.key) {
+        boolean last = false;
+        while (!last) {
+            HeapNode prev = curNode;
+            curNode.mark = false;
             curNode.parent = null;
             curNode = curNode.next;
+            if (curNode.key==this.min.child.key){ last=true; curNode = prev;}
+
+
         }
         curNode.next = this.min.next;
         this.min.next.prev = curNode;
@@ -327,8 +346,9 @@ public class FibonacciHeap {
     }
 
     public void consolidation() {
-        int sizeArray = (int) (Math.log10(this.size) / Math.log10(2));
-        HeapNode[] ranksArray = new HeapNode[sizeArray + 1];
+        int sizeArray = (int) (Math.log10(this.size) / Math.log10(0.5+Math.sqrt(1.25)));
+        HeapNode[] ranksArray = new HeapNode[sizeArray + 10];
+
         ranksArray[this.first.rank] = this.first;
         HeapNode curNode = this.first.next;
         this.first.next = this.first;
@@ -392,6 +412,7 @@ public class FibonacciHeap {
         numOfLinks++;
     }
 
+
     public int markRec(HeapNode node) {
         int result = 0;
         if (!node.mark) {
@@ -406,38 +427,13 @@ public class FibonacciHeap {
     }
 
 
-    public static void main(String[] args) {
-        FibonacciHeap fib = new FibonacciHeap();
-        for (int i = 0; i < 5; i++) {
-            fib.insert(2 * i);
-        }
-        System.out.println(fib.nonMarked());
-        fib.decreaseKey(fib.first, 1);
-        System.out.println(fib.min.key);
-        System.out.println(fib.first.key);
-        fib.decreaseKey(fib.min, 1);
-        System.out.println(fib.min.key);
-        System.out.println(Arrays.toString(fib.countersRep()));
-        fib.deleteMin();
-        System.out.println(Arrays.toString(fib.countersRep()));
-        System.out.println(totalLinks());
-        System.out.println(totalCuts());
-        //fib.deleteMin();
-        System.out.println(Arrays.toString(fib.countersRep()));
-        System.out.println(fib.nonMarked());
-        System.out.println(totalLinks());
-        System.out.println(totalCuts());
-        System.out.println(Arrays.toString(kMin(fib, 4)));
-
-    }
-
     /**
      * public class HeapNode
      * <p>
      * If you wish to implement classes other than FibonacciHeap
      * (for example HeapNode), do it in this file, not in another file.
      */
-    public static class HeapNode {
+    static class HeapNode {
 
         public int key;
         public int rank;
@@ -446,8 +442,7 @@ public class FibonacciHeap {
         public HeapNode parent;
         public HeapNode next;
         public HeapNode prev;
-
-        //public String info;
+        public HeapNode copy;
 
         public HeapNode(int key) {
             this.key = key;
@@ -465,8 +460,3 @@ public class FibonacciHeap {
     }
 
 }
-
-
-
-
-
