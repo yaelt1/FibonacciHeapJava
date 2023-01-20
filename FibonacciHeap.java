@@ -1,3 +1,13 @@
+// student1 name - Noa Malka
+// student1 username - noamalka1
+// student1 id - 209513910
+
+// student2 name - Yael Tzur
+// student2 username - yaelt1
+// student2 id - 207829805
+
+
+
 /**
  * FibonacciHeap
  * <p>
@@ -18,9 +28,9 @@ public class FibonacciHeap {
      * <p>
      * Returns true if and only if the heap is empty.
      */
-    public boolean isEmpty() {   //O(1)
+    public boolean isEmpty() {
         return this.size == 0;
-    } //O(1)
+    }  //O(1)
 
     /**
      * public HeapNode insert(int key)
@@ -94,7 +104,7 @@ public class FibonacciHeap {
      * <p>
      * Returns the number of elements in the heap.
      */
-    public int size() { //O(1)
+    public int size() {
         return this.size;
     } //O(1)
 
