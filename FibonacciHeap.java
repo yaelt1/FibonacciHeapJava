@@ -20,7 +20,7 @@ public class FibonacciHeap {
      */
     public boolean isEmpty() {   //O(1)
         return this.size == 0;
-    }
+    } //O(1)
 
     /**
      * public HeapNode insert(int key)
@@ -42,7 +42,7 @@ public class FibonacciHeap {
      * <p>
      * Deletes the node containing the minimum key.
      */
-    public void deleteMin() {   //WC O(n), Amortize O(logn)
+    public void deleteMin() {   //W.C. O(n), Amortize O(logn)
         this.size -= 1;
         if (this.size == 0) {
             this.first = null;
@@ -62,7 +62,7 @@ public class FibonacciHeap {
      * <p>
      * Returns the node of the heap whose key is minimal, or null if the heap is empty.
      */
-    public HeapNode findMin() {
+    public HeapNode findMin() { //O(1)
         if (this.isEmpty()) {
             return null;
         }
@@ -96,7 +96,7 @@ public class FibonacciHeap {
      */
     public int size() { //O(1)
         return this.size;
-    }
+    } //O(1)
 
     /**
      * public int[] countersRep()
@@ -104,7 +104,7 @@ public class FibonacciHeap {
      * Return an array of counters. The i-th entry contains the number of trees of order i in the heap.
      * (Note: The size of the array depends on the maximum order of a tree.)
      */
-    public int[] countersRep() {
+    public int[] countersRep() { //O(n)
         int[] aidArray = new int[this.size];
         if (this.isEmpty()) {
             return aidArray;
@@ -133,7 +133,7 @@ public class FibonacciHeap {
      * Deletes the node x from the heap.
      * It is assumed that x indeed belongs to the heap.
      */
-    public void delete(HeapNode x) {
+    public void delete(HeapNode x) { //W.C O(n) Amortize O(log(n))
         int delta = x.key-this.min.key+1;
         if (this.min.key==Integer.MIN_VALUE){this.decreaseKey(x, x.key-this.min.key);}
         else{this.decreaseKey(x, delta);}
@@ -146,12 +146,12 @@ public class FibonacciHeap {
      * Decreases the key of the node x by a non-negative value delta. The structure of the heap should be updated
      * to reflect this change (for example, the cascading cuts procedure should be applied if needed).
      */
-    public void decreaseKey(HeapNode x, int delta) {
+    public void decreaseKey(HeapNode x, int delta) { // O(log(n))
         x.key = x.key - delta;
         if (x.key == Integer.MIN_VALUE){this.min=x;}
         if (x.key<this.min.key){this.min=x;}
         if (x.parent != null) {
-            if (x.key < x.parent.key) { //breaks the heap condition
+            if (x.key < x.parent.key) {
                 this.cascadingCut(x, x.parent);
             }
         }
@@ -162,7 +162,7 @@ public class FibonacciHeap {
      * <p>
      * This function returns the current number of non-marked items in the heap
      */
-    public int nonMarked() {
+    public int nonMarked() { //O(n)
         int result = 0;
         HeapNode curNode = this.first;
         boolean reachedLast = false;
@@ -195,7 +195,7 @@ public class FibonacciHeap {
      * In words: The potential equals to the number of trees in the heap
      * plus twice the number of marked nodes in the heap.
      */
-    public int potential() {
+    public int potential() { //O(n)
         if (this.isEmpty()) {
             return 0;
         }
@@ -219,7 +219,7 @@ public class FibonacciHeap {
      */
     public static int totalLinks() {
         return numOfLinks;
-    }
+    } //O(1)
 
     /**
      * public static int totalCuts()
@@ -230,7 +230,7 @@ public class FibonacciHeap {
      */
     public static int totalCuts() {
         return numOfCuts;
-    }
+    } //O(1)
 
     /**
      * public static int[] kMin(FibonacciHeap H, int k)
@@ -240,7 +240,7 @@ public class FibonacciHeap {
      * <p>
      * ###CRITICAL### : you are NOT allowed to change H.
      */
-    public static int[] kMin(FibonacciHeap H, int k) {
+    public static int[] kMin(FibonacciHeap H, int k) { //O(k*deg(H))
         if (k==0){return new int[0];}
         int[] arr = new int[k];
         FibonacciHeap aidHeap = new FibonacciHeap();
@@ -265,7 +265,7 @@ public class FibonacciHeap {
 
     //Aid Functions
 
-    public void deleteNoChild() {
+    public void deleteNoChild() { //O(1)
         if (this.first.key == this.min.key) {
             this.first = this.min.next;
         }
@@ -276,7 +276,7 @@ public class FibonacciHeap {
         this.min.next.prev = this.min.prev;
     }
 
-    public void deleteWithChild() {
+    public void deleteWithChild() { //O(log(n))
         if (this.first.key == this.min.key) {
             this.first = this.min.child;
         }
@@ -300,7 +300,7 @@ public class FibonacciHeap {
         this.min.child.prev = this.min.prev;
     }
 
-    public void cut(HeapNode deletedNode) {
+    public void cut(HeapNode deletedNode) { //O(1)
         HeapNode parent = deletedNode.parent;
         deletedNode.parent = null;
         deletedNode.mark = false;
@@ -318,7 +318,7 @@ public class FibonacciHeap {
         this.insertNode(deletedNode);
     }
 
-    public void insertNode(HeapNode newNode) {
+    public void insertNode(HeapNode newNode) { //O(1)
         if (this.isEmpty()) {
             this.last = newNode;
             this.min = newNode;
@@ -334,7 +334,7 @@ public class FibonacciHeap {
         this.first = newNode;
     }
 
-    public void cascadingCut(HeapNode child, HeapNode parent) {
+    public void cascadingCut(HeapNode child, HeapNode parent) { //O(log(n))
         this.cut(child);
         if (parent.parent != null) {
             if (!parent.mark) {
@@ -345,7 +345,7 @@ public class FibonacciHeap {
         }
     }
 
-    public void consolidation() {
+    public void consolidation() { // W.C O(n) Amortize O(log(n))
         int sizeArray = (int) (Math.log10(this.size) / Math.log10(0.5+Math.sqrt(1.25)));
         HeapNode[] ranksArray = new HeapNode[sizeArray + 10];
 
@@ -391,7 +391,7 @@ public class FibonacciHeap {
         }
     }
 
-    public void connectSameRanks(HeapNode smallerKey, HeapNode biggerKey, HeapNode[] ranksArray) {
+    public void connectSameRanks(HeapNode smallerKey, HeapNode biggerKey, HeapNode[] ranksArray) { //O(1)
         if (smallerKey.rank == 0) {
             smallerKey.child = biggerKey;
             biggerKey.parent = smallerKey;
@@ -413,7 +413,7 @@ public class FibonacciHeap {
     }
 
 
-    public int markRec(HeapNode node) {
+    public int markRec(HeapNode node) { //O(log(n))
         int result = 0;
         if (!node.mark) {
             result++;
@@ -444,7 +444,7 @@ public class FibonacciHeap {
         public HeapNode prev;
         public HeapNode copy;
 
-        public HeapNode(int key) {
+        public HeapNode(int key) { //O(1)
             this.key = key;
             this.mark = false;
             this.child = null;
@@ -456,7 +456,7 @@ public class FibonacciHeap {
 
         public int getKey() {
             return this.key;
-        }
+        } //O(1)
     }
 
 }
