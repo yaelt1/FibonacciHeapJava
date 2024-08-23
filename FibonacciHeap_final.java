@@ -441,32 +441,6 @@ public class FibonacciHeap_final {
     public HeapNode getLast(){
         return this.last;
     }
-//
-//    public void main(String[] args) {
-//        FibonacciHeap fib = new FibonacciHeap();
-//        for (int i = 0; i < 5; i++) {
-//            fib.insert(2 * i);
-//        }
-//
-
-//        System.out.println(fib.nonMarked());
-//        fib.decreaseKey(fib.first, 1);
-//        System.out.println(fib.min.key);
-//        System.out.println(fib.first.key);
-//        fib.decreaseKey(fib.min, 1);
-//        System.out.println(fib.min.key);
-//        System.out.println(Arrays.toString(fib.countersRep()));
-//        fib.deleteMin();
-//        System.out.println(Arrays.toString(fib.countersRep()));
-//        System.out.println(totalLinks());
-//        System.out.println(totalCuts());
-//        //fib.deleteMin();
-//        System.out.println(Arrays.toString(fib.countersRep()));
-//        System.out.println(fib.nonMarked());
-//        System.out.println(totalLinks());
-//        System.out.println(totalCuts());
-//        System.out.println(Arrays.toString(kMin(fib, 4)));
-
 
     /**
      * public class HeapNode
@@ -530,39 +504,6 @@ public class FibonacciHeap_final {
         heap.delete(node);
         System.out.println(""+heap.first.key +""+  heap.min.key);
     }
-//        int m = (int) Math.pow(2, 20);
-//        long startTime = System.currentTimeMillis();
-//        FibonacciHeap heap = new FibonacciHeap();
-//        HeapNode[] help = new HeapNode[m];
-//
-//        for (int i=m-1; i>-2; i--){
-//            heap.insert(i);
-//            if (i!= -1){
-//            help[i]= heap.first;}
-//        }
-//        heap.deleteMin();
-//        int pow = m;
-//        HeapNode node2 = help[m-2];
-//        System.out.println("cut" +""+node2.key);
-//
-//        while (pow>=2){
-//            HeapNode node = help[m-pow+1];
-//            System.out.println("cut" +""+node.key);
-//            heap.decreaseKey(node, m+1);
-//
-//
-//            pow= pow/2;
-//        }
-//        heap.decreaseKey(node2,m+1);
-////        long endTime = System.currentTimeMillis();
-//        long elapsedTime = endTime - startTime;
-//        System.out.println("Elapsed time in milliseconds: " + elapsedTime);
-//        System.out.println(totalLinks());
-//        System.out.println(totalCuts());
-//        System.out.println(heap.potential());
-//
-//        System.out.println(Arrays.toString(heap.countersRep()));
-
 
 }
 
